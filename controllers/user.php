@@ -2,7 +2,7 @@
 
 require_once '../config/connection.php';
 
-function index(): array {
+function indexUser(): array {
   global $conn;
 
   $statement = $conn->prepare("SELECT * FROM users");
@@ -21,7 +21,7 @@ function createUser($username, $password) {
   global $conn;
   if (empty($username) || empty($password)) {
     $param = http_build_query([
-      'type' => 'success',
+      'type' => 'error',
       'message' => 'Username and password must be filled'
     ]);
     header("Location: ../views/register.php?$param");

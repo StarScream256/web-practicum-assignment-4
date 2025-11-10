@@ -51,6 +51,16 @@ function login($username, $password) {
   header("Location: ../views/index.php");
 }
 
+function logout() {
+  session_destroy();
+  $param = http_build_query([
+    'type' => 'success',
+    'message' => 'You are logged out'
+  ]);
+  header("Location: ../views/login.php?$param");
+  exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = $_POST['action'] ?? '';
 
