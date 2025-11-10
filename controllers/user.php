@@ -21,7 +21,8 @@ function createUser($username, $password) {
   global $conn;
   if (empty($username) || empty($password)) {
     $param = http_build_query([
-      'error' => 'Username and password must be filled'
+      'type' => 'success',
+      'message' => 'Username and password must be filled'
     ]);
     header("Location: ../views/register.php?$param");
     exit(); 
@@ -29,7 +30,8 @@ function createUser($username, $password) {
 
   if (findUserByUsername($username) !== []) {
     $param = http_build_query([
-      'error' => 'Username already used, please try another'
+      'type' => 'success',
+      'message' => 'Username already used, please try another'
     ]);
     header("Location: ../views/register.php?$param");
     exit(); 
@@ -41,7 +43,8 @@ function createUser($username, $password) {
   $statement->execute();
 
   $param = http_build_query([
-    'success' => 'Registration success'
+    'type' => 'success',
+    'message' => 'Registration success'
   ]);
   header("Location: ../views/login.php?$param");
   exit(); 
@@ -66,4 +69,14 @@ function findUserById($id): array {
   $statement->execute();
   $result = $statement->get_result();
   return $result->fetch_assoc() ?? [];
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $action = $_POST['action'] ?? '';
+
+  switch ($_POST['action']) {
+    case 'create':
+      createUser($_POST['username'], $_POST['password']);
+      break;
+  }
 }

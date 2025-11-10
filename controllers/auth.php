@@ -12,7 +12,8 @@ function isAuthenticated() {
   } else {
     session_unset();
     $param = http_build_query([
-      'error' => 'You are not logged in'
+      'type' => 'error',
+      'message' => 'You are not logged in'
     ]);
     header("Location: ../views/login.php?$param");
     exit();
