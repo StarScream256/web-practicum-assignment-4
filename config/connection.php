@@ -1,6 +1,6 @@
 <?php
 
-include 'db_config.php';
+require_once 'db_config.php';
 
 $conn_status = "Pending";
 $conn = null;

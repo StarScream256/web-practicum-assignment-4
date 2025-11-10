@@ -1,6 +1,6 @@
 <?php
 
-include '../config/connection.php';
+require_once '../config/connection.php';
 
 function index(): array {
   global $conn;
@@ -30,7 +30,7 @@ function createUser($username, $password) {
 
   if (findUserByUsername($username) !== []) {
     $param = http_build_query([
-      'type' => 'success',
+      'type' => 'error',
       'message' => 'Username already used, please try another'
     ]);
     header("Location: ../views/register.php?$param");

@@ -1,6 +1,6 @@
 <?php
 
-include '../components/components.php';
+require_once '../components/components.php';
 ?>
 
 
