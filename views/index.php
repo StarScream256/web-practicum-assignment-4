@@ -27,21 +27,21 @@ $searchFilter = $_GET['search'] ?? '';
           <?= icon("list_alt", "!text-2xl text-gray-700") ?>
           <span class="w-full flex justify-between">
             <p class="font-medium w-fit">All task</p>
-            <p class="">7</p>
+            <p class=""><?= countTodoByStatus($user['id_user'], "All") ?></p>
           </span>
         </a>
         <a href="index.php?status=Done" class="h-fit w-full bg-gray-100 hover:bg-green-100 rounded-lg flex items-center gap-3 py-2 px-3">
           <?= icon("check_circle", "!text-2xl text-gray-700") ?>
           <span class="w-full flex justify-between">
             <p class="font-medium w-fit">Done</p>
-            <p class="">0</p>
+            <p class=""><?= countTodoByStatus($user['id_user'], "Done") ?></p>
           </span>
         </a>
         <a href="index.php?status=Pending" class="h-fit w-full bg-gray-100 hover:bg-yellow-100 rounded-lg flex items-center gap-3 py-2 px-3">
           <?= icon("calendar_today", "!text-2xl text-gray-700") ?>
           <span class="w-full flex justify-between">
             <p class="font-medium w-fit">Pending</p>
-            <p class="">1</p>
+            <p class=""><?= countTodoByStatus($user['id_user'], "Pending") ?></p>
           </span>
         </a>
       </div>
@@ -88,7 +88,6 @@ $searchFilter = $_GET['search'] ?? '';
       </span>
       
       <?php
-        $user = findUserByUsername($_SESSION['username']);
         $todos = indexTodo($user['id_user'], $statusFilter, $searchFilter);
 
         if ($todos === []) {

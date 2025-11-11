@@ -3,7 +3,7 @@
 require_once '../config/connection.php';
 require_once 'user.php';
 
-function indexTodo($userId, $status = 'all', $search = ''): array {
+function indexTodo($userId, $status = 'All', $search = ''): array {
   global $conn;
 
   $sql = "SELECT * FROM todo WHERE id_user = ?";
@@ -35,6 +35,28 @@ function indexTodo($userId, $status = 'all', $search = ''): array {
   }
 
   return $todos;
+}
+
+function countTodoByStatus($userId, $status = "All") {
+  global $conn;
+
+  // 1. Give your COUNT a name using "AS total"
+  $sql = "SELECT COUNT(*) AS total FROM todo WHERE id_user = ?";
+  $params = [$userId];
+  $types = "i";
+
+  if ($status === 'Done' || $status === 'Pending') {
+    $sql .= " AND status = ?";
+    $params[] = $status;
+    $types .= "s";
+  }
+
+  $statement = $conn->prepare($sql);
+  $statement->bind_param($types, ...$params);
+  $statement->execute();
+  $result = $statement->get_result();
+  $row = $result->fetch_assoc();
+  return (int) $row['total'];
 }
 
 function createTodo($todo, $status, $username) {
