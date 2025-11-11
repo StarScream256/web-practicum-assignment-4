@@ -95,11 +95,11 @@ function doneTodo($type, $todoId, $userId) {
   exit();
 }
 
-function findTodoById($id): array {
+function findTodoById($todoId, $userId): array {
   global $conn;
 
-  $statement = $conn->prepare("SELECT * FROM todo WHERE id_todo = ? LIMIT 1");
-  $statement->bind_param("i", $id);
+  $statement = $conn->prepare("SELECT * FROM todo WHERE id_todo = ? AND id_user = ? LIMIT 1");
+  $statement->bind_param("ii", $todoId, $userId);
   $statement->execute();
   $result = $statement->get_result();
   return $result->fetch_assoc() ?? [];
