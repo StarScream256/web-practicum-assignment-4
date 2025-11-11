@@ -9,8 +9,8 @@ isAuthenticated();
 if (!isset($_GET['todoId'])) {
   header("Location: index.php");
 }
-$todo = findTodoById($_GET['todoId']);
 $user = findUserByUsername($_SESSION['username']);
+$todo = findTodoById($_GET['todoId'], $user['id_user']);
 ?>
 
 
