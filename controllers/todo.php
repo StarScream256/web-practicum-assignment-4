@@ -3,11 +3,29 @@
 require_once '../config/connection.php';
 require_once 'user.php';
 
-function indexTodo($userId): array {
+function indexTodo($userId, $status = 'all', $search = ''): array {
   global $conn;
 
-  $statement = $conn->prepare("SELECT * FROM todo WHERE id_user = ? ORDER BY created_at DESC");
-  $statement->bind_param("i", $userId);
+  $sql = "SELECT * FROM todo WHERE id_user = ?";
+  $params = [$userId];
+  $types = "i";
+
+  if ($status === 'Done' || $status === 'Pending') {
+    $sql .= " AND status = ?";
+    $params[] = $status;
+    $types .= "s";
+  }
+
+  if (!empty($search)) {
+    $sql .= " AND todo LIKE ?";
+    $params[] = "%" . $search . "%";
+    $types .= "s";
+  }
+
+  $sql .= " ORDER BY created_at DESC";
+
+  $statement = $conn->prepare($sql);
+  $statement->bind_param($types, ...$params);
   $statement->execute();
   $result = $statement->get_result();
   $todos = [];

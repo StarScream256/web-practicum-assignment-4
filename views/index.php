@@ -6,6 +6,9 @@ require_once '../controllers/todo.php';
 
 isAuthenticated();
 $user = findUserByUsername($_SESSION['username']);
+
+$statusFilter = $_GET['status'] ?? 'All task';
+$searchFilter = $_GET['search'] ?? '';
 ?>
 
 <html>
@@ -20,21 +23,21 @@ $user = findUserByUsername($_SESSION['username']);
     </div>
     <div class="h-full w-auto flex flex-col justify-between">
       <div class="w-full flex flex-col gap-2 mt-3">
-        <a href="" class="h-fit w-full bg-gray-100 hover:bg-blue-100 rounded-lg flex items-center gap-3 py-2 px-3">
+        <a href="index.php" class="h-fit w-full bg-gray-100 hover:bg-blue-100 rounded-lg flex items-center gap-3 py-2 px-3">
           <?= icon("list_alt", "!text-2xl text-gray-700") ?>
           <span class="w-full flex justify-between">
             <p class="font-medium w-fit">All task</p>
             <p class="">7</p>
           </span>
         </a>
-        <a href="" class="h-fit w-full bg-gray-100 hover:bg-green-100 rounded-lg flex items-center gap-3 py-2 px-3">
+        <a href="index.php?status=Done" class="h-fit w-full bg-gray-100 hover:bg-green-100 rounded-lg flex items-center gap-3 py-2 px-3">
           <?= icon("check_circle", "!text-2xl text-gray-700") ?>
           <span class="w-full flex justify-between">
             <p class="font-medium w-fit">Done</p>
             <p class="">0</p>
           </span>
         </a>
-        <a href="" class="h-fit w-full bg-gray-100 hover:bg-yellow-100 rounded-lg flex items-center gap-3 py-2 px-3">
+        <a href="index.php?status=Pending" class="h-fit w-full bg-gray-100 hover:bg-yellow-100 rounded-lg flex items-center gap-3 py-2 px-3">
           <?= icon("calendar_today", "!text-2xl text-gray-700") ?>
           <span class="w-full flex justify-between">
             <p class="font-medium w-fit">Pending</p>
@@ -43,7 +46,7 @@ $user = findUserByUsername($_SESSION['username']);
         </a>
       </div>
       <div class="w-full h-fit flex flex-col gap-2">
-        <a href="" class="h-fit w-full bg-gray-100 hover:bg-red-100 rounded-lg flex items-center gap-3 py-2 px-3">
+        <a href="../controllers/auth.php?action=logout" class="h-fit w-full bg-gray-100 hover:bg-red-100 rounded-lg flex items-center gap-3 py-2 px-3">
           <?= icon("logout", "!text-2xl text-gray-700") ?>
           <p class="font-medium">Logout</p>
         </a>
@@ -61,7 +64,7 @@ $user = findUserByUsername($_SESSION['username']);
   </aside>  
   <div class="w-full flex flex-col gap-5">
     <header class="w-full h-fit p-2.5 bg-white shadow-lg rounded-xl flex items-center justify-between">
-      <form action="" method="post" class="w-96 h-fit flex items-center gap-3 relative">
+      <form action="index.php" method="get" class="w-96 h-fit flex items-center gap-3 relative">
         <input type="text" name="search" placeholder="Search todo" class="w-full py-2 px-3 rounded-lg border-[1.5px] border-gray-500 appearance-none outline-2 outline-transparent focus:outline-blue-500">
         <button type="submit" class="hover:text-blue-500 absolute right-3 cursor-pointer">
           <?= icon("search", "!text-2xl") ?>
@@ -74,10 +77,28 @@ $user = findUserByUsername($_SESSION['username']);
     </header>
 
     <div class="w-full h-fit flex flex-col gap-2">
+      <span class="w-full flex gap-2">
+        <p class="font-semibold"><?= $statusFilter ?></p>
+        <?php if ($searchFilter !== '') { ?>
+          <span class="flex gap-2">
+            <p class=""><?=  $searchFilter !== '' ? "containing '$searchFilter'" : '' ?></p>
+            <a href="index.php" class="text-blue-500 underline">Reset</a>
+          </span>
+        <?php } ?>
+      </span>
       
       <?php
-        $userId = findUserByUsername($_SESSION['username']);
-        $todos = indexTodo($userId['id_user']);
+        $user = findUserByUsername($_SESSION['username']);
+        $todos = indexTodo($user['id_user'], $statusFilter, $searchFilter);
+
+        if ($todos === []) {
+          ?>
+            <div class="w-full h-fit bg-white shadow px-3 py-2 pr-22 rounded-lg flex items-start gap-3 relative font-medium">
+              No available task here
+            </div>
+          <?php
+        }
+
         foreach ($todos as $todo) {
           $createdAt = new DateTime($todo['created_at']);
       ?>
